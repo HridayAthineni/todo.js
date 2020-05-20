@@ -9,11 +9,10 @@ class Task {
     }
 
     toString() {
-        let htmlText = '<li class="task" ><div>'
+        let htmlText = '<li class="task" id='+this.taskId+'><div>'
         htmlText += this.name
-        htmlText += ", " + this.dueDate.getDate() 
-                 + "/" + this.dueDate.getMonth();
-        htmlText += '<input type="checkbox" name="isDone" id="isDone">'
+        htmlText += ", " + this.dueDate;
+        htmlText += '<input type="checkbox" onclick="markTask('+this.taskId+')" name="isDone" id="isDone">'
         htmlText += '<button onclick="deleteTask(';
         htmlText += this.taskId;
         htmlText += ')">Delete</button>';
@@ -22,12 +21,27 @@ class Task {
     }
 }
 
+function markTask(taskId) {
+    console.log(taskId);
+    taskList.forEach((task) => {
+        if(taskId == task.taskId) task.isDone = true;
+        render()
+    })
+
+}
+
 function render() {
     const listUI = document.getElementById("todolist")
     listUI.innerHTML = "";
     if (taskList.length === 0) listUI.innerHTML = "No tasks todo :-)"
     taskList.forEach((task) => {
         listUI.innerHTML += task.toString();
+        if (task.isDone == true) {
+            document.getElementById(task.taskId).style.color = "red";
+    
+
+            // = "<mark>document.getElementById(task.taskId).value</mark>"
+        }
     })
 }
 
@@ -47,7 +61,8 @@ function deleteTask(taskId) {
 
 function createTask() {
     const taskName = document.getElementById("taskName").value;
-    addTask(new Task(taskName, new Date(), false));
+    const date = document.getElementById("date").value;
+    addTask(new Task(taskName, date, false));
 }
 
 function addTask(t) {
